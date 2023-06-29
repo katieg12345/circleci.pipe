@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.metadata.name }}
+  labels:
+    app: {{ .Values.metadata.name }}
+spec:
+  replicas: {{ .Values.dep.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.metadata.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.metadata.name }}
+    spec:
+      containers:
+      - name: {{ .Values.metadata.name }}
+        image: {{ .Values.dep.image }} #katieg123/weather-k8s
+        ports:
+        - containerPort: {{ .Values.env.containerPort }} #58080
+        resources:
+          requests:
+            cpu: {{ .Values.dep.resources.requests.cpu }}
+            memory: {{ .Values.dep.resources.requests.memory }}
+          limits:
+            cpu: {{ .Values.dep.resources.limits.cpu }}
+            memory: {{ .Values.dep.resources.limits.memory }}
+        env:
+          - name: LOG_LEVEL
+            value: "{{ .Values.env.logLevel }}" # "DEBUG"
+          - name: WORKERS
+            value: "{{ .Values.env.workers }}" #"1"
+          - name: BIND_PORT
+            value: "{{ .Values.env.containerPort }}"
+          - name: API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: "{{ .Values.secret.name }}" #api-keys
+                key: API_KEY

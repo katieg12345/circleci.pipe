@@ -1,0 +1,28 @@
+metadata:
+  name: weather
+
+dep:
+  replicas: 2
+  image: katieg123/weather-gitlabci:latest
+  resources:
+    requests:
+      cpu: 100m
+      memory: 100Mi
+    limits:
+      cpu: 100m
+      memory: 100Mi
+
+env:
+  logLevel: "DEBUG"
+  workers: "2"
+  containerPort: 58080
+
+svc:
+  name: weather-svc
+  port: 80
+  nodeport: 30001
+  type: NodePort
+
+secret:
+  name: api-keys
+  apiKey: "*************************"
