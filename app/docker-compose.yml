@@ -7,12 +7,9 @@ services:
       - API_KEY=${API_KEY}
       - BIND_PORT=58080
       - LOG_LEVEL=DEBUG
-      - BG_COLOR=${BG_COLOR}
-      # - API_KEY_OPENAI=${API_KEY_OPENAI}
-      # - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      # - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-    networks:
-      - weather-app
+      # - BG_COLOR=${BG_COLOR}
+    # networks:
+    #   - weather-app
     deploy:
       replicas: 1
     ports:
@@ -32,6 +29,6 @@ services:
   #   - weather
 
 
-networks:
-  weather-app:
-    external: true
+# networks:
+#   weather-app:
+#     external: true
