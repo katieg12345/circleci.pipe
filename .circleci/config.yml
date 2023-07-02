@@ -19,7 +19,7 @@ jobs:
           name: Install dependencies
           command: |
             apk add --no-cache \
-              py-pip=9.0.0-r1
+              py-pip=9.0.0-r1 python3
             pip install \
               docker-compose==1.12.0 
       - restore_cache:
@@ -51,7 +51,7 @@ jobs:
           command: |
             cd ./app
             docker-compose up -d && sleep 5
-            python unit.py
+            python3 unit.py
       - deploy:
           name: Push application Docker image
           command: |
