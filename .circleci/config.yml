@@ -49,10 +49,9 @@ jobs:
       - run:
           name: Run tests
           command: |
-            ls -l
-            pwd
             cd ./app
             docker-compose up -d && sleep 5
+            docker logs app_weather_1
             python unit.py
       - deploy:
           name: Push application Docker image
