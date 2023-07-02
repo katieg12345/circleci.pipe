@@ -52,7 +52,7 @@ jobs:
             ls -l
             pwd
             cd ./app
-            docker-compose up -d && docker-compose wait
+            docker-compose up -d && sleep 5
             python3 unit.py
       - deploy:
           name: Push application Docker image
