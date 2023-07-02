@@ -7,9 +7,6 @@ services:
       - API_KEY=${API_KEY}
       - BIND_PORT=58080
       - LOG_LEVEL=DEBUG
-      # - BG_COLOR=${BG_COLOR}
-    # networks:
-    #   - weather-app
     deploy:
       replicas: 1
     ports:

@@ -7,6 +7,7 @@ class TestReach(unittest.TestCase):
         url = "http://localhost:58080"
         try:
             response = requests.get(url)
+            print (response, flush=True)
             self.assertEqual(response.status_code, 200)
         except:
             self.fail("Website is not reachable")
