@@ -2,8 +2,8 @@ version: 2.1
 
 executors:
   docker-publisher:
-    environment:
-      IMAGE_TAG: <username>/helloworld:latest
+    # environment:
+    #   IMAGE_TAG: <username>/helloworld:latest
     docker:
       - image: docker:stable
 
@@ -21,9 +21,10 @@ jobs:
             apk add --no-cache \
               py-pip=9.0.0-r1
             pip install \
-              docker-compose==1.12.0 \
+              docker-compose==1.12.0 
       - restore_cache:
-          key: v1-{{ .Branch }}
+          keys: 
+            - v1-{{ .Branch }}
           paths:
             - /caches/app.tar
       - run:
