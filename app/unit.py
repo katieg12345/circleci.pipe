@@ -4,7 +4,7 @@ import requests
 class TestReach(unittest.TestCase):
 
     def test_reach(self):
-        url = "http://localhost:58080"
+        url = "http://127.0.0.1:8080"
         try:
             response = requests.get(url)
             print (response, flush=True)
