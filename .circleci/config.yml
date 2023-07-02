@@ -52,7 +52,7 @@ jobs:
             cd ./app
             echo $IMAGE
             docker-compose up -d && sleep 5
-            docker exec app-weather-1 python3 /app/unit.py
+            docker exec app_weather_1 python3 /app/unit.py
       - deploy:
           name: Push application Docker image
           command: |
