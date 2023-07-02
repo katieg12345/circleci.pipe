@@ -50,7 +50,7 @@ jobs:
           name: Run tests
           command: |
             cd ./app
-            docker-compose up -d && sleep 5
+            docker-compose up -d && sleep 10
             docker logs app_weather_1
             python unit.py
       - deploy:
