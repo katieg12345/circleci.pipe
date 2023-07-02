@@ -1,11 +1,11 @@
 version: 2.1
 
-executors:
-  docker-publisher:
-    # environment:
-    #   IMAGE_TAG: <username>/helloworld:latest
-    docker:
-      - image: docker:stable
+# executors:
+#   docker-publisher:
+#     # environment:
+#     #   IMAGE_TAG: <username>/helloworld:latest
+#     docker:
+#       - image: docker:stable
 
 jobs:
   build:
