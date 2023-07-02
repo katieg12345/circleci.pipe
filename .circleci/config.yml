@@ -49,6 +49,9 @@ jobs:
       - run:
           name: Run tests
           command: |
+            ls -l
+            pwd
+            cd ./app
             docker-compose up -d && docker-compose wait
             python3 unit.py
       - deploy:
