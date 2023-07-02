@@ -50,6 +50,7 @@ jobs:
           name: Run tests
           command: |
             cd ./app
+            echo $IMAGE
             docker-compose up -d && sleep 5
             python3 unit.py
       - deploy:
