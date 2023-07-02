@@ -5,7 +5,7 @@ COPY  ./req.txt req.txt
 
 RUN pip install --no-cache-dir -r req.txt && rm req.txt
 
-COPY /app /app
+COPY ./app /app
 WORKDIR /app
 
 ENV WORKERS=5

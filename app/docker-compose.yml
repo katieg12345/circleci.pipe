@@ -2,7 +2,7 @@ version: '3'
 
 services:
   weather:
-    image: ${IMAGE}
+    image: test/test #${IMAGE}
     environment:
       - API_KEY=${API_KEY}
       - BIND_PORT=8080
