@@ -2,7 +2,7 @@ version: '3'
 
 services:
   weather:
-    image: katieg123/weather-jsondb:5
+    image: ${IMAGE}
     environment:
       - API_KEY=${API_KEY}
       - BIND_PORT=58080
