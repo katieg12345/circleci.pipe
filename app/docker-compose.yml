@@ -11,24 +11,25 @@ services:
       # - API_KEY_OPENAI=${API_KEY_OPENAI}
       # - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       # - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-
     networks:
       - weather-app
     deploy:
       replicas: 1
-  nginx:
-    image: nginx:alpine
-    container_name: nginx
-    volumes:
-      - ./nginx/:/etc/nginx/conf.d/:rw
-      - ./app/certs:/etc/nginx/certs:ro
     ports:
-      - 443:443
-      - 80:80
-    networks:
-      - weather-app
-    depends_on:
-    - weather
+      - 58080:58080
+  # nginx:
+  #   image: nginx:alpine
+  #   container_name: nginx
+  #   volumes:
+  #     - ./nginx/:/etc/nginx/conf.d/:rw
+  #     - ./app/certs:/etc/nginx/certs:ro
+  #   ports:
+  #     - 443:443
+  #     - 80:80
+  #   networks:
+  #     - weather-app
+  #   depends_on:
+  #   - weather
 
 
 networks:
