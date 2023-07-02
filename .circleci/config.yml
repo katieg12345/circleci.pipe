@@ -48,13 +48,12 @@ jobs:
       - run:
           name: Run tests
           command: |
-            docker-compose up -d
-            sleep 10
+            docker-compose up -d && docker-compose wait
             python3 unit.py
       - deploy:
           name: Push application Docker image
           command: |
-            echo “$DOCKERHUB_PASSWORD” | docker login -u “$DOCKERHUB_USERNAME” — password-stdin
-            docker push $IMAGE_NAME:latest
-            docker push $IMAGE_NAME:$CIRCLE_SHA1
+            echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" — password-stdin
+            docker push $IMAGE:latest
+            docker push $IMAGE:$CIRCLE_SHA1
 
