@@ -36,12 +36,12 @@ jobs:
           name: Build application Docker image
           command: |
             cd app
-            docker build --cache-from=app -f Dockerfile -t $IMAGE .
+            docker build --cache-from=$IMAGE -f Dockerfile -t $IMAGE .
       - run:
           name: Save Docker image layer cache
           command: |
             mkdir -p /caches
-            docker save -o /caches/app.tar app
+            docker save -o /caches/app.tar $IMAGE
       - save_cache:
           key: v1-{{ .Branch }}-{{ epoch }}
           paths:
