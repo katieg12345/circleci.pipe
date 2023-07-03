@@ -20,7 +20,7 @@ jobs:
           name: Install dependencies
           command: |
             apk add --no-cache \
-              py3-pip python3 curl
+              py3-pip python3 
             pip3 install \
               docker-compose==1.12.0 requests
       - restore_cache:
@@ -61,6 +61,10 @@ jobs:
             docker push $IMAGE:latest
             docker tag $IMAGE $IMAGE:$CIRCLE_SHA1
             docker push $IMAGE:$CIRCLE_SHA1
+  alert:
+    docker: 
+      - image: circleci/python:3.8
+    steps:
       - discord/status:
           fail_only: true
           failure_message: "Triggered by: **${CIRCLE_USERNAME}** \\n\\n Ooops! The **$CIRCLE_JOB** job has failed!"
