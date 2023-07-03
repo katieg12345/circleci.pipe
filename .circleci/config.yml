@@ -73,3 +73,10 @@ jobs:
           success_only: true
           success_message: "Triggered by: **${CIRCLE_USERNAME}** \\n\\n yay! The **$CIRCLE_JOB** job is ok!"
           webhook: "${DISCORD_WEBHOOK}"
+
+workflows:
+  version: 2
+  my_workflow:
+    jobs:
+      - build
+      - alert
