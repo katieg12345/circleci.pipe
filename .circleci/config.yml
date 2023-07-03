@@ -69,3 +69,7 @@ jobs:
           fail_only: true
           failure_message: "Triggered by: **${CIRCLE_USERNAME}** \\n\\n Ooops! The **$CIRCLE_JOB** job has failed!"
           webhook: "${DISCORD_WEBHOOK}"
+      - discord/status:
+          success_only: true
+          success_message: "Triggered by: **${CIRCLE_USERNAME}** \\n\\n yay! The **$CIRCLE_JOB** job is ok!"
+          webhook: "${DISCORD_WEBHOOK}"
