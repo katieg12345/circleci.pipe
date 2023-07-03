@@ -60,4 +60,7 @@ jobs:
             docker push $IMAGE:latest
             docker tag $IMAGE $IMAGE:$CIRCLE_SHA1
             docker push $IMAGE:$CIRCLE_SHA1
-
+      - discord/status:
+          fail_only: true
+          failure_message: "Triggered by: **${CIRCLE_USERNAME}** \\n\\n Ooops! The **$CIRCLE_JOB** job has failed!"
+          webhook: "${DISCORD_WEBHOOK}"
