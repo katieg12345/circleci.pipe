@@ -97,7 +97,7 @@ jobs:
     resource_class: katieg12345/runner
     steps:
       - helm/install-helm-client
-      - checkout
+      # - checkout
       - helm/install-helm-chart:
           add-repo: https://argoproj.github.io/argo-helm
           chart: argo/argo-cd
