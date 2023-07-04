@@ -3,6 +3,7 @@ orbs:
   discord: antonioned/discord@0.1.0
   kubernetes: circleci/kubernetes@1.3.1
   helm: circleci/helm@2.0.1
+
 # executors:
 #   docker-publisher:
 #     # environment:
@@ -10,7 +11,7 @@ orbs:
 #     docker:
 #       - image: docker:git
 
- jobs:
+jobs:
 #   build:
 #     working_directory: /app
 #     docker:
