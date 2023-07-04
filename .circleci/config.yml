@@ -96,9 +96,9 @@ jobs:
       - image: cimg/base:current
     resource_class: katieg12345/runner
     steps:
+      - checkout
       - kubernetes/install-kubectl
       - helm/install-helm-client
-      - checkout
       - run:
           name: "deploy argo and app"
           command: |
