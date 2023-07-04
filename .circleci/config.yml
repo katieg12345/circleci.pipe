@@ -102,7 +102,7 @@ jobs:
       - checkout
       - kubernetes/install-kubectl
       - kubernetes/create-or-update-resource:
-          namespace: default
+          namespace: deploy
           get-rollout-status: true
           resource-file-path: k8s/nginx-conf.yaml
           resource-name: deployment/nginx-deployment
@@ -115,6 +115,7 @@ jobs:
       - checkout
       - kubernetes/delete-resource:
           now: true
+          namespace: deploy
           resource-names: nginx-deployment
           resource-types: deployments
           wait: true    
