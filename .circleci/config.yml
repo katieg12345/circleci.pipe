@@ -103,6 +103,7 @@ jobs:
           command: |
             helm repo add argo https://argoproj.github.io/argo-helm
             helm repo update
+            ls -l
             helm install argocd argo/argo-cd -n deploy -f argo/argo-values.yaml \
               --set configs.secret.argocdServerAdminPassword=$ARGO_INIT_PASS \
               --set configs.repositories.repo.password=$GITHUB_TOKEN
