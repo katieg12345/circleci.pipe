@@ -96,14 +96,23 @@ jobs:
       - image: cimg/base:current
     resource_class: katieg12345/runner
     steps:
+      - kubernetes/install-kubectl
       - helm/install-helm-client
-      # - checkout
-      - helm/install-helm-chart:
-          add-repo: https://argoproj.github.io/argo-helm
-          update-repositories: true
-          chart: argo/argo-cd
-          namespace: deploy
-          release-name: argocd
+      - command: |
+          helm install argocd argo/argo-cd -n deploy -f argo/argo-values.yaml \
+            --set configs.secret.argocdServerAdminPassword $ARGO_INIT_PASS \
+            --set configs.repositories.repo.password $GITHUB_TOKEN
+          kubectl apply -f argo/argo-dep.yaml
+
+
+
+      # # - checkout
+      # - helm/install-helm-chart:
+      #     add-repo: https://argoproj.github.io/argo-helm
+      #     update-repositories: true
+      #     chart: argo/argo-cd
+      #     namespace: deploy
+      #     release-name: argocd
 
 
 

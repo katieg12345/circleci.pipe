@@ -1,0 +1,15 @@
+configs:
+  secret:
+    argocdServerAdminPassword: "*********************"
+  repositories:
+    repo:
+      url: https://github.com/katieg12345/argo
+      type: git
+      password: "**********************"
+      username: katieg12345
+server:
+  service:
+    type: NodePort
+    nodePortHttp: 30080
+    nodePortHttps: 30443
+
