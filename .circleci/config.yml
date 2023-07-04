@@ -101,7 +101,7 @@ jobs:
     steps:
       - checkout
       - kubernetes/install-kubectl
-      - kubernetes/describe:
+      - kubernetes/create-or-update-resource:
           namespace: default
           get-rollout-status: true
           resource-file-path: k8s/nginx-conf.yaml
