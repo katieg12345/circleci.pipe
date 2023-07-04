@@ -103,7 +103,8 @@ jobs:
           chart: argo/argo-cd
           namespace: deploy
           release-name: argocd
-          values-to-override: "configs.repositories.myrepo= "{url: https://github.com/katieg12345/argo, type: helm, password: $GITHUB_TOKEN, username: katieg12345}""
+          values-to-override: |
+            "configs.repositories.myrepo={url: 'https://github.com/katieg12345/argo', type: 'helm', password: '$GITHUB_TOKEN', username: 'katieg12345'}"          
 
 
 
