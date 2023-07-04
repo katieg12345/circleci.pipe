@@ -102,8 +102,22 @@ jobs:
       - checkout
       - kubernetes/install-kubectl
       - kubernetes/describe:
-          namespace: portainer
-          resource-name: deployments/portainer-agent
+          namespace: default
+          get-rollout-status: true
+          resource-file-path: k8s/nginx-conf.yaml
+          resource-name: deployment/nginx-deployment
+          show-kubectl-command: true
+  delete:
+    docker:
+      - image: cimg/base:current
+    resource_class: katieg12345/runner
+    steps:
+      - checkout
+      - kubernetes/delete-resource:
+          now: true
+          resource-names: nginx-deployment
+          resource-types: deployments
+          wait: true    
 
 workflows:
   version: 2
@@ -114,3 +128,6 @@ workflows:
           requires:
             - build
       - deploy
+      - delete:
+          requires:
+            - deploy 
