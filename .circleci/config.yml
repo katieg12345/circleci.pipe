@@ -90,7 +90,7 @@ jobs:
       - checkout
       - run:
           name: Run Checkov
-          command: checkov -d -s tf/eks --download-external-modules terraform-aws-modules/vpc/aws --download-external-modules terraform-aws-modules/eks/aws
+          command: checkov -s -d tf/eks --download-external-modules terraform-aws-modules/vpc/aws --download-external-modules terraform-aws-modules/eks/aws
   helm:
     docker:
       - image: cimg/base:current
