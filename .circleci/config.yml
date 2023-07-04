@@ -1,12 +1,14 @@
 version: 2.1
 orbs:
   discord: antonioned/discord@0.1.0
+  kubernetes: circleci/kubernetes@1.3.1
+
 # executors:
 #   docker-publisher:
 #     # environment:
-#     #   IMAGE_TAG: <username>/helloworld:latest
+#     #   IMAGE_TAG: 
 #     docker:
-#       - image: docker:stable
+#       - image: docker:git
 
 jobs:
   build:
@@ -53,7 +55,7 @@ jobs:
             cd ./app
             echo $IMAGE
             docker-compose up -d && sleep 5
-            docker exec app_weather_1 python3 /app/unit.py
+            docker exec app-weather-1 python3 /app/unit.py
       - deploy:
           name: Push application Docker image
           command: |
@@ -73,12 +75,42 @@ jobs:
           success_only: true
           success_message: "Triggered by: **${CIRCLE_USERNAME}** \\n\\n yay! The **$CIRCLE_JOB** job is ok!"
           webhook: "${DISCORD_WEBHOOK}"
+  # terratest:
+  #   docker:
+  #     - image: golang:1.16
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: Install Terratest
+  #         command: go get github.com/gruntwork-io/terratest/modules/terraform
+  #     - run:
+  #         name: Run Terratest
+  #         command: go test -v terratest/terratest.go
+  checkov:
+    docker:
+      - image: bridgecrew/checkov:latest
+    steps:
+      - checkout
+      - run:
+          name: Run Checkov
+          command: checkov -d tf/eks --download-external-modules terraform-aws-modules/vpc/aws --download-external-modules terraform-aws-modules/eks/aws
+  deploy:
+    docker:
+      - image: cimg/base:current
+    resource_class: katieg12345/runner
+    steps:
+      - checkout
+      - kubernetes/install-kubectl
+      - kubernetes/describe:
+          namespace: portainer
+          resource-name: deployments/portainer-agent
 
-# workflows:
-#   version: 2
-#   my_workflow:
-#     jobs:
-#       - build
-#       - alert:
-#           requires:
-#             - build
+workflows:
+  version: 2
+  build-and-test:
+    jobs:
+      - build
+      - checkov:
+          requires:
+            - build
+      - deploy
