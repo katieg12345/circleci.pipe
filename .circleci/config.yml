@@ -2,7 +2,7 @@ version: 2.1
 orbs:
   discord: antonioned/discord@0.1.0
   kubernetes: circleci/kubernetes@1.3.1
-
+  helm: circleci/helm@2.0.1
 # executors:
 #   docker-publisher:
 #     # environment:
@@ -10,71 +10,67 @@ orbs:
 #     docker:
 #       - image: docker:git
 
-jobs:
-  build:
-    working_directory: /app
-    docker:
-      - image: docker:git
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: Install dependencies
-          command: |
-            apk add --no-cache \
-              py3-pip python3 curl bash
-            pip3 install \
-              docker-compose==1.12.0 requests
-      - restore_cache:
-          keys: 
-            - v1-{{ .Branch }}
-          paths:
-            - /caches/app.tar
-      - run:
-          name: Load Docker image layer cache
-          command: |
-            set +o pipefail
-            docker load -i /caches/app.tar | true
-      - run:
-          name: Build application Docker image
-          command: |
-            cd app
-            docker build --cache-from=$IMAGE -f Dockerfile -t $IMAGE .
-      - run:
-          name: Save Docker image layer cache
-          command: |
-            mkdir -p /caches
-            docker save -o /caches/app.tar $IMAGE
-      - save_cache:
-          key: v1-{{ .Branch }}-{{ epoch }}
-          paths:
-            - /caches/app.tar
-      - run:
-          name: Run tests
-          command: |
-            cd ./app
-            echo $IMAGE
-            docker-compose up -d && sleep 5
-            docker exec app-weather-1 python3 /app/unit.py
-      - deploy:
-          name: Push application Docker image
-          command: |
-            docker login -u "$DOCKERHUB_USERNAME" -p $DOCKERHUB_PASSWORD
-            docker push $IMAGE:latest
-            docker tag $IMAGE $IMAGE:$CIRCLE_SHA1
-            docker push $IMAGE:$CIRCLE_SHA1
-  # alert:
-  #   docker: 
-  #     - image: circleci/python:3.8
-  #   steps:
-      - discord/status:
-          fail_only: true
-          failure_message: "Triggered by: **${CIRCLE_USERNAME}** \\n\\n Ooops! The **$CIRCLE_JOB** job has failed!"
-          webhook: "${DISCORD_WEBHOOK}"
-      - discord/status:
-          success_only: true
-          success_message: "Triggered by: **${CIRCLE_USERNAME}** \\n\\n yay! The **$CIRCLE_JOB** job is ok!"
-          webhook: "${DISCORD_WEBHOOK}"
+ jobs:
+#   build:
+#     working_directory: /app
+#     docker:
+#       - image: docker:git
+#     steps:
+#       - checkout
+#       - setup_remote_docker
+#       - run:
+#           name: Install dependencies
+#           command: |
+#             apk add --no-cache \
+#               py3-pip python3 curl bash
+#             pip3 install \
+#               docker-compose==1.12.0 requests
+#       - restore_cache:
+#           keys: 
+#             - v1-{{ .Branch }}
+#           paths:
+#             - /caches/app.tar
+#       - run:
+#           name: Load Docker image layer cache
+#           command: |
+#             set +o pipefail
+#             docker load -i /caches/app.tar | true
+#       - run:
+#           name: Build application Docker image
+#           command: |
+#             cd app
+#             docker build --cache-from=$IMAGE -f Dockerfile -t $IMAGE .
+#       - run:
+#           name: Save Docker image layer cache
+#           command: |
+#             mkdir -p /caches
+#             docker save -o /caches/app.tar $IMAGE
+#       - save_cache:
+#           key: v1-{{ .Branch }}-{{ epoch }}
+#           paths:
+#             - /caches/app.tar
+#       - run:
+#           name: Run tests
+#           command: |
+#             cd ./app
+#             echo $IMAGE
+#             docker-compose up -d && sleep 5
+#             docker exec app-weather-1 python3 /app/unit.py
+#       - deploy:
+#           name: Push application Docker image
+#           command: |
+#             docker login -u "$DOCKERHUB_USERNAME" -p $DOCKERHUB_PASSWORD
+#             docker push $IMAGE:latest
+#             docker tag $IMAGE $IMAGE:$CIRCLE_SHA1
+#             docker push $IMAGE:$CIRCLE_SHA1
+#       - discord/status:
+#           fail_only: true
+#           failure_message: "Triggered by: **${CIRCLE_USERNAME}** \\n\\n Ooops! The **$CIRCLE_JOB** job has failed!"
+#           webhook: "${DISCORD_WEBHOOK}"
+#       - discord/status:
+#           success_only: true
+#           success_message: "Triggered by: **${CIRCLE_USERNAME}** \\n\\n yay! The **$CIRCLE_JOB** job is ok!"
+#           webhook: "${DISCORD_WEBHOOK}"
   # terratest:
   #   docker:
   #     - image: golang:1.16
@@ -86,49 +82,77 @@ jobs:
   #     - run:
   #         name: Run Terratest
   #         command: go test -v terratest/terratest.go
-  checkov:
-    docker:
-      - image: bridgecrew/checkov:latest
-    steps:
-      - checkout
-      - run:
-          name: Run Checkov
-          command: checkov -d tf/eks --download-external-modules terraform-aws-modules/vpc/aws --download-external-modules terraform-aws-modules/eks/aws
-  deploy:
-    docker:
-      - image: cimg/base:current
-    resource_class: katieg12345/runner
-    steps:
-      - checkout
-      - kubernetes/install-kubectl
-      - kubernetes/create-or-update-resource:
-          namespace: deploy
-          get-rollout-status: true
-          resource-file-path: k8s/nginx-conf.yaml
-          resource-name: deployment/nginx-deployment
-          show-kubectl-command: true
-  delete:
+  # checkov:
+  #   docker:
+  #     - image: bridgecrew/checkov:latest
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: Run Checkov
+  #         command: checkov -d tf/eks --download-external-modules terraform-aws-modules/vpc/aws --download-external-modules terraform-aws-modules/eks/aws
+  helm:
     docker:
       - image: cimg/base:current
     resource_class: katieg12345/runner
     steps:
+      - helm/install-helm-client
       - checkout
-      - kubernetes/delete-resource:
-          now: true
+      - helm/install-helm-chart:
+          add-repo: https://argoproj.github.io/argo-helm
+          chart: argo/argo-cd
           namespace: deploy
-          resource-names: nginx-deployment
-          resource-types: deployments
-          wait: true    
+          release-name: argocd
+          values-to-override: |
+            configs:
+              repositories:
+                myrepo: 
+                  url: https://github.com/katieg12345/argo
+                  type: helm
+                  password: $GITHUB_TOKEN
+                  username: katieg12345
+
+
+
+
+
+
+  # deploy:
+  #   docker:
+  #     - image: cimg/base:current
+  #   resource_class: katieg12345/runner
+  #   steps:
+  #     - checkout
+  #     - kubernetes/install-kubectl
+  #     - kubernetes/create-or-update-resource:
+  #         namespace: deploy
+  #         get-rollout-status: true
+  #         resource-file-path: k8s/nginx-conf.yaml
+  #         resource-name: deployment/nginx-deployment
+  #         show-kubectl-command: true
+  # delete:
+  #   docker:
+  #     - image: cimg/base:current
+  #   resource_class: katieg12345/runner
+  #   steps:
+  #     - checkout
+  #     - kubernetes/install-kubectl
+  #     - kubernetes/delete-resource:
+  #         now: true
+  #         namespace: deploy
+  #         resource-names: nginx-deployment
+  #         resource-types: deployments
+  #         wait: true    
 
 workflows:
   version: 2
   build-and-test:
     jobs:
-      - build
-      - checkov:
-          requires:
-            - build
-      - deploy
-      - delete:
-          requires:
-            - deploy 
+      # - build
+      # - checkov:
+      #     requires:
+      #       - build
+      # - deploy
+      # - delete:
+      #     requires:
+      #       - deploy 
+      - helm
