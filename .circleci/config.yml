@@ -101,6 +101,7 @@ jobs:
       - run:
           name: "deploy argo and app"
           command: |
+            helm repo update
             helm install argocd argo/argo-cd -n deploy -f argo/argo-values.yaml \
               --set configs.secret.argocdServerAdminPassword=$ARGO_INIT_PASS \
               --set configs.repositories.repo.password=$GITHUB_TOKEN
