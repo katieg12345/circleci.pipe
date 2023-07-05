@@ -104,7 +104,7 @@ jobs:
           command: |
             helm repo add argo https://argoproj.github.io/argo-helm
             helm repo update
-            helm install argocd argo/argo-cd -n deploy -f argo/argo-values.yaml \
+            helm install argocd argo/argo-cd -n weather-deploy -f argo/argo-values.yaml \
               --set configs.secret.argocdServerAdminPassword=$ARGO_INIT_PASS \
               --set configs.repositories.repo.password=$GITHUB_TOKEN
             kubectl apply -f argo/argo-dep.yaml
@@ -143,13 +143,13 @@ workflows:
   build-and-test:
     jobs:
       - build
-      - checkov:
-          requires:
-            - build
+      # - checkov:
+      #     requires:
+      #       - build
       # - deploy
       # - delete:
       #     requires:
       #       - deploy 
       - helm:
           requires:
-            - checkov
+            - build

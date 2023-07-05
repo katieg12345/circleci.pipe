@@ -2,11 +2,11 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: weather-deploy
-  namespace: deploy
+  namespace: weather-deploy
 spec:
   destination:
     name: ''
-    namespace: deploy
+    namespace: weather-deploy
     server: 'https://kubernetes.default.svc'
   source:
     path: weather-app
