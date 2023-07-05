@@ -152,5 +152,4 @@ workflows:
       #       - deploy 
       - helm:
           requires:
-            - build
             - checkov
