@@ -109,6 +109,22 @@ jobs:
               --set configs.repositories.repo.password=$GITHUB_TOKEN
             kubectl apply -f argo/argo-dep.yaml
             kubectl apply -f argo/chaos-dep.yaml
+  helm-cleanup:
+    docker:
+      - image: cimg/base:current
+    resource_class: katieg12345/runner
+    steps:
+      - checkout
+      - kubernetes/install-kubectl
+      - helm/install-helm-client
+      - run:
+          name: "deploy argo and app"
+          command: |
+            helm repo add argo https://argoproj.github.io/argo-helm
+            helm repo update
+            kubectl delete -f argo/argo-dep.yaml
+            kubectl delete -f argo/chaos-dep.yaml
+            helm uninstall argocd -n weather-deploy 
 
   # deploy:
   #   docker:
@@ -141,7 +157,7 @@ workflows:
   version: 2
   build-and-test:
     jobs:
-      - build
+      # - build
       # - checkov:
       #     requires:
       #       - build
@@ -149,6 +165,6 @@ workflows:
       # - delete:
       #     requires:
       #       - deploy 
-      - helm:
-          requires:
-            - build
+      - helm-cleanup
+          # requires:
+          #   - build
