@@ -108,8 +108,8 @@ jobs:
               --set configs.secret.argocdServerAdminPassword=$ARGO_INIT_PASS \
               --set configs.repositories.repo.password=$GITHUB_TOKEN
             kubectl apply -f argo/argo-dep.yaml
-            sleep 5
-            kubectl apply -f argo/chaos-dep.yaml
+          # sleep 5
+            # kubectl apply -f argo/chaos-dep.yaml
 
   # deploy:
   #   docker:
