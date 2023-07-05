@@ -150,4 +150,7 @@ workflows:
       # - delete:
       #     requires:
       #       - deploy 
-      - helm
+      - helm:
+          requires:
+            - build
+            - checkov
