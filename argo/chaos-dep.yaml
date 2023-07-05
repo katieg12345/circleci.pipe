@@ -3,19 +3,15 @@ kind: Application
 metadata:
   name: chaos
   namespace: deploy
-
 spec:
   destination:
     name: ''
-    namespace: chaos
+    namespace: deploy
     server: 'https://kubernetes.default.svc'
   source:
     path: chaos
     repoURL: 'https://github.com/katieg12345/argo'
     targetRevision: HEAD
-    helm:
-      valueFiles:
-        - values.yaml
   sources: []
   project: default
   syncPolicy:
@@ -24,3 +20,4 @@ spec:
       selfHeal: false
     syncOptions:
       - CreateNamespace=true
+      - PrunePropagationPolicy=orphan
