@@ -16,5 +16,7 @@ ENV BIND_PORT=58080
 ENV LOG_LEVEL=info
 
 EXPOSE $BIND_PORT
-ENTRYPOINT ["./entrypoint.sh"]
+# ENTRYPOINT ["./entrypoint.sh"]
 
+ENTRYPOINT gunicorn --bind=0.0.0.0:${BIND_PORT}\
+     --workers=${WORKERS} --log-level=${LOG_LEVEL} project:app
