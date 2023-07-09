@@ -157,7 +157,7 @@ workflows:
   version: 2
   build-and-test:
     jobs:
-      #- build
+      - build
       #- checkov:
       #    requires:
       #      - build
@@ -165,9 +165,9 @@ workflows:
       # - delete:
       #     requires:
       #       - deploy 
-      - helm #:
-      #    requires:
-      #      - build
+      - helm:
+          requires:
+            - build
     #  - hold:
     #      type: approval
     #      requires:
