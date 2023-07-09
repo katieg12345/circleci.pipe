@@ -1,10 +1,11 @@
 #!/bin/sh
 
+
 if [[ -n "${KUBERNETES_SERVICE_HOST}" ]]; then
   while [ ! -f /vault/secrets/apikey ];do
     sleep 1
   done
-
+sleep 30
 # Source the secrets file, this will export the API_KEY environment variable
 source /vault/secrets/apiKey
 fi
